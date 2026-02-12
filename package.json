@@ -1,5 +1,27 @@
 {
   "dependencies": {
-    "express": "^5.2.1"
-  }
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11"
+  },
+  "name": "tukiplan",
+  "version": "1.0.0",
+  "description": " lightweight, beginner-friendly web app for discovering, ticketing, and planning casual weekend events in Kenya (picnics, parties, meetups, small gatherings). Built for organizers and groups who don't need (or can't afford) big platforms",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Teddy-1001/TukiPlan.git"
+  },
+  "author": "Teddy",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Teddy-1001/TukiPlan/issues"
+  },
+  "homepage": "https://github.com/Teddy-1001/TukiPlan#readme"
 }
