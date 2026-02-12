@@ -1,7 +1,12 @@
 // server.js
 import express from "express";
 import path from "path";
+import bcrypt from "bcrypt";
+import session from "express-session";
 import { fileURLToPath } from "url";
+import connection from "./db/dbConnect.js";
+import { configDotenv } from "dotenv";
+configDotenv(); 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +20,15 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false}
+}))
 
 // Route for plain text
 app.get("/", (req, res) => {
@@ -110,10 +124,78 @@ app.get("/index", (req, res) => {
         })
     })
 
+    app.post("/login", (req,res)=>{
+        const {email, password} = req.body;
+
+        connection.query("SELECT * FROM users WHERE email = ?", [email], async(querryErr, results)=>{
+            if(querryErr){
+                console.error("DB Query error", querryErr);
+                res.status(500).json({message: "Internal Server Error"})
+            }
+            if(results.length === 0){
+                // No user found with that email
+                 return res.status(401).send("Invalid email or password")
+            }
+            const user = results[0];
+
+            //compare password with hashed
+            bcrypt.compare(password, user.hashedPassword, (bcryptError, isMatch)=>{
+                if(bcryptError){
+                    console.error("Error comparing passwords", bcryptError);
+                    return res.status(500).send("Internal Server Error")
+                }
+                if(isMatch){
+                    // Passwords match, login successful
+                    console.log("Login successful for user:", user.email);
+                    // Here you would typically create a session or JWT token
+                    console.log("Login successful");
+
+                    //create session
+                    req.session.user = results[0]
+
+                    res.redirect("/dashboard")
+                } else {
+                    // Passwords do not match
+                    console.log("Login failed for user:", user.email);
+                    res.status(401).send("Invalid email or password")
+                }
+            })
+        })
+    })
+
     app.get("/register", (req,res)=>{
         res.render("signup", {
             title: "Register - WeekendVibe",
         })
+    })
+    app.post("/register", async (req,res)=>{
+        // Handle user registration logic here
+        try {
+            const {fullname, email, password} = req.body;
+
+            //hashing password
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds)
+
+            //insert user into database
+            const insertStatement = `INSERT INTO users(fullname,email, hashedPassword) VALUES (?, ?, ?)`;
+            connection.query(insertStatement, [fullname, email, hashedPassword], (querryErr, results)=>{
+                if(querryErr){
+                    console.error("DB Insert error", querryErr);
+                    res.status(500).json({message: "Internal Server Error"})
+                }
+                if(results){
+                    // res.status(201).json({message: "User registered successfully"})
+                    console.log("User registered successfully");
+                    
+                    res.redirect("/login")
+                }
+            })
+        } catch (error) { 
+            console.error("Registration error", error);
+            res.status(500).json({message: "Internal Server Error"})
+            
+        }
     })
 
 app.listen(port, () => {
