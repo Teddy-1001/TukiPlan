@@ -1,378 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title><%= title || 'TukiPlan · create a weekend vibe' %></title>
-  
-  <!-- Tailwind + Inter font style -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  
-  <!-- Flatpickr for friendly date/time picker -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  
-  <style>
-    /* consistent TukiPlan identity – calm, friendly, modest */
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-    .soft-shadow {
-      box-shadow: 0 8px 30px rgba(0,0,0,0.02), 0 2px 6px rgba(0,20,30,0.02);
-    }
-    .input-ring {
-      transition: all 0.15s ease;
-    }
-    .input-ring:focus {
-      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.06);
-      border-color: #a5b4fc;
-      background-color: white;
-    }
-    .hover-lift:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 20px 28px -10px rgba(0,45,60,0.06);
-    }
-    .bg-cream-50 {
-      background-color: #faf7f2;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'TukiPlan · create a weekend vibe' %>
+    </title>
+
+    <!-- Tailwind + Inter font style -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="shortcut icon" href="./images/Blue and Black Minimalist Brand Logo.png" type="image/x-icon">
+
+    <!-- Flatpickr for friendly date/time picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <style>
+        /* consistent TukiPlan identity – calm, friendly, modest */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .soft-shadow {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 20, 30, 0.02);
+        }
+
+        .input-ring {
+            transition: all 0.15s ease;
+        }
+
+        .input-ring:focus {
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.06);
+            border-color: #a5b4fc;
+            background-color: white;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 28px -10px rgba(0, 45, 60, 0.06);
+        }
+
+        .bg-cream-50 {
+            background-color: #faf7f2;
+        }
+    </style>
 </head>
+
 <body class="bg-stone-50 text-stone-800 antialiased flex flex-col min-h-screen">
 
-  <!-- NAVBAR – consistent with TukiPlan login/signup pages -->
-  <nav class="bg-white/90 backdrop-blur-sm border-b border-stone-200/60 text-stone-700 sticky top-0 z-20">
-    <div class="container mx-auto px-5 md:px-6 py-4 flex justify-between items-center">
-      <a href="/" class="text-2xl md:text-3xl font-light tracking-tight text-stone-800 flex items-end gap-1">
-        <span class="font-semibold text-blue-900">TukiPlan</span>
-        <span class="text-xs uppercase bg-stone-100 text-stone-600 px-2 py-1 rounded-full font-medium border border-stone-200/50">weekend</span>
-      </a>
-      
-      <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
-        <a href="/events" class="text-stone-600 hover:text-blue-900 transition-colors flex items-center gap-1.5">
-          <i class="far fa-compass text-xs"></i> Discover
+    <!-- NAVBAR – consistent with TukiPlan login/signup pages -->
+    <nav class="bg-white/90 backdrop-blur-sm border-b border-stone-200/60 text-stone-700 sticky top-0 z-20">
+        <div class="container mx-auto px-5 md:px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl md:text-3xl font-light tracking-tight text-stone-800 flex items-end gap-1">
+                <span class="font-semibold text-blue-900">TukiPlan</span>
+                <span
+                    class="text-xs uppercase bg-stone-100 text-stone-600 px-2 py-1 rounded-full font-medium border border-stone-200/50">weekend</span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="/events"
+                    class="text-stone-600 hover:text-blue-900 transition-colors flex items-center gap-1.5">
+                    <i class="far fa-compass text-xs"></i> Discover
+                </a>
+                <a href="/meetups"
+                    class="text-stone-600 hover:text-blue-900 transition-colors flex items-center gap-1.5">
+                    <i class="fas fa-user-group text-xs"></i> Plan together
+                </a>
+                <% if (user) { %>
+                    <span
+                        class="text-stone-500 text-sm flex items-center gap-1.5 ml-1 bg-stone-100/70 px-4 py-1.5 rounded-full">
+                        <i class="far fa-smile text-blue-600/70"></i>
+                        <%= user.username %>
+                    </span>
+                    <a href="/logout"
+                        class="ml-2 border border-stone-200 text-stone-700 px-5 py-2 rounded-full hover:bg-stone-100 transition text-sm">Logout</a>
+                    <% } else { %>
+                        <a href="/login" class="text-stone-600 hover:text-blue-900 transition">Login</a>
+                        <a href="/register"
+                            class="bg-blue-900 text-white px-5 py-2 rounded-full hover:bg-blue-800 transition shadow-sm text-sm font-medium">Sign
+                            up</a>
+                        <% } %>
+            </div>
+
+            <button class="md:hidden text-stone-600 p-2 rounded-full hover:bg-stone-100" id="mobile-menu-btn">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT – create event, warm & spacious -->
+    <main class="container mx-auto px-5 py-16 max-w-4xl flex-grow">
+
+        <!-- back to events – subtle link -->
+        <a href="/"
+            class="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 mb-8 transition group">
+            <i class="fas fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i> back to events
         </a>
-        <a href="/meetups" class="text-stone-600 hover:text-blue-900 transition-colors flex items-center gap-1.5">
-          <i class="fas fa-user-group text-xs"></i> Plan together
-        </a>
-        <% if (user) { %>
-          <span class="text-stone-500 text-sm flex items-center gap-1.5 ml-1 bg-stone-100/70 px-4 py-1.5 rounded-full">
-            <i class="far fa-smile text-blue-600/70"></i> <%= user.username %>
-          </span>
-          <a href="/logout" class="ml-2 border border-stone-200 text-stone-700 px-5 py-2 rounded-full hover:bg-stone-100 transition text-sm">Logout</a>
-        <% } else { %>
-          <a href="/login" class="text-stone-600 hover:text-blue-900 transition">Login</a>
-          <a href="/register" class="bg-blue-900 text-white px-5 py-2 rounded-full hover:bg-blue-800 transition shadow-sm text-sm font-medium">Sign up</a>
-        <% } %>
-      </div>
 
-      <button class="md:hidden text-stone-600 p-2 rounded-full hover:bg-stone-100" id="mobile-menu-btn">
-        <i class="fas fa-bars text-xl"></i>
-      </button>
-    </div>
-  </nav>
+        <!-- MAIN CARD – soft, elevated, generous whitespace -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-3xl soft-shadow border border-stone-100/80 overflow-hidden">
 
-  <!-- MAIN CONTENT – create event, warm & spacious -->
-  <main class="container mx-auto px-5 py-16 max-w-4xl flex-grow">
-    
-    <!-- back to events – subtle link -->
-    <a href="/" class="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 mb-8 transition group">
-      <i class="fas fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i> back to events
-    </a>
-
-    <!-- MAIN CARD – soft, elevated, generous whitespace -->
-    <div class="bg-white/90 backdrop-blur-sm rounded-3xl soft-shadow border border-stone-100/80 overflow-hidden">
-      
-      <!-- header – gentle gradient, humble vibe -->
-      <div class="bg-gradient-to-br from-blue-50 to-stone-50 px-8 py-10 md:px-12 md:py-12 border-b border-stone-100">
-        <div class="flex items-center gap-3 text-blue-800 mb-4">
-          <span class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center">
-            <i class="fas fa-plus-circle text-blue-700"></i>
-          </span>
-          <span class="text-xs uppercase tracking-wider text-stone-600 bg-white/80 px-4 py-1.5 rounded-full border border-stone-200/50">
-            start a new tuki
-          </span>
-        </div>
-        <h1 class="text-3xl md:text-4xl font-light text-stone-800 mb-3 tracking-tight">
-          Create your <span class="font-semibold text-blue-900">weekend event</span>
-        </h1>
-        <p class="text-lg text-stone-600 max-w-2xl leading-relaxed">
-          Picnic, nyama choma, house party, or just a hangout. Share the vibe — your crew is waiting.
-        </p>
-      </div>
-
-      <!-- FORM – clean, friendly, no clutter -->
-      <form action="/events" method="POST" class="p-8 md:p-12 space-y-8">
-        
-        <!-- EVENT TITLE -->
-        <div class="space-y-2">
-          <label for="title" class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
-            <span class="text-blue-900 font-semibold">Event title</span> <span class="text-stone-400">*</span>
-          </label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <i class="fas fa-calendar-day text-stone-400 text-sm"></i>
+            <!-- header – gentle gradient, humble vibe -->
+            <div
+                class="bg-gradient-to-br from-blue-50 to-stone-50 px-8 py-10 md:px-12 md:py-12 border-b border-stone-100">
+                <div class="flex items-center gap-3 text-blue-800 mb-4">
+                    <span class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center">
+                        <i class="fas fa-plus-circle text-blue-700"></i>
+                    </span>
+                    <span
+                        class="text-xs uppercase tracking-wider text-stone-600 bg-white/80 px-4 py-1.5 rounded-full border border-stone-200/50">
+                        start a new tuki
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-light text-stone-800 mb-3 tracking-tight">
+                    Create your <span class="font-semibold text-blue-900">weekend event</span>
+                </h1>
+                <p class="text-lg text-stone-600 max-w-2xl leading-relaxed">
+                    Picnic, nyama choma, house party, or just a hangout. Share the vibe — your crew is waiting.
+                </p>
             </div>
-            <input 
-              type="text" 
-              id="title" 
-              name="title" 
-              required 
-              placeholder="e.g. Sunset picnic & acoustic jam"
-              class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition"
-            />
-          </div>
+
+            <!-- FORM – clean, friendly, no clutter -->
+            <form action="/create" method="POST" enctype="multipart/form-data" class="p-8 md:p-12 space-y-8">
+
+                <!-- EVENT TITLE -->
+                <div class="space-y-2">
+                    <label for="title" class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
+                        <span class="text-blue-900 font-semibold">Event title</span> <span
+                            class="text-stone-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-calendar-day text-stone-400 text-sm"></i>
+                        </div>
+                        <input type="text" id="title" name="title" required
+                            placeholder="e.g. Sunset picnic & acoustic jam"
+                            class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition" />
+                    </div>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="space-y-2">
+                    <label for="description"
+                        class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
+                        <span class="text-blue-900 font-semibold">Description</span> <span
+                            class="text-stone-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute top-5 left-0 pl-4 flex items-start pointer-events-none">
+                            <i class="fas fa-align-left text-stone-400 text-sm mt-1"></i>
+                        </div>
+                        <textarea id="description" name="description" rows="5" required
+                            placeholder="Tell people what to expect — food, music, vibe, what to bring, who it's for..."
+                            class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition"></textarea>
+                    </div>
+                    <p class="text-xs text-stone-500 pl-1">✨ the more details, the better the crew</p>
+                </div>
+
+                <!-- DATE & TIME + LOCATION (grid) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- date/time -->
+                    <div class="space-y-2">
+                        <label for="event_date"
+                            class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
+                            <span class="text-blue-900 font-semibold">Date & time</span> <span
+                                class="text-stone-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-clock text-stone-400 text-sm"></i>
+                            </div>
+                            <input type="text" id="event_date" name="event_date" required
+                                placeholder="Pick a date & time"
+                                class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition" />
+                        </div>
+                        <p class="text-xs text-stone-500 pl-1">📆 weekends = more tukis</p>
+                    </div>
+
+                    <!-- location -->
+                    <div class="space-y-2">
+                        <label for="location"
+                            class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
+                            <span class="text-blue-900 font-semibold">Location</span> <span
+                                class="text-stone-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-map-pin text-stone-400 text-sm"></i>
+                            </div>
+                            <input type="text" id="location" name="location" required
+                                placeholder="e.g. Uhuru Park, Nairobi"
+                                class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRICE & TICKET QUANTITY (grid) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- price -->
+                    <div class="space-y-2">
+                        <label for="price"
+                            class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
+                            <span class="text-blue-900 font-semibold">Ticket price (KSh)</span> <span
+                                class="text-stone-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-tag text-stone-400 text-sm"></i>
+                            </div>
+                            <input type="number" id="price" name="price" min="0" step="50" required value="0"
+                                class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition" />
+                        </div>
+                        <p class="text-xs text-stone-500 pl-1">🆓 0 = free entry</p>
+                    </div>
+
+                    <!-- tickets available -->
+                    <div class="space-y-2">
+                        <label for="tickets_available"
+                            class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
+                            <span class="text-blue-900 font-semibold">Tickets available</span> <span
+                                class="text-stone-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-ticket text-stone-400 text-sm"></i>
+                            </div>
+                            <input type="number" id="tickets_available" name="tickets_available" min="1" required
+                                value="30"
+                                class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition" />
+                        </div>
+                        <p class="text-xs text-stone-500 pl-1">🎟️ start small, sell out faster</p>
+                    </div>
+                </div>
+
+                <!-- IMAGE UPLOAD -->
+                <div class="space-y-2">
+                    <label for="fileInput"
+                        class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
+                        <span class="text-blue-900 font-semibold">Event image</span>
+                        <span class="text-stone-400 text-xs font-normal">(optional but recommended)</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-image text-stone-400 text-sm"></i>
+                        </div>
+                        <input type="file" id="fileInput" name="image" accept="image/*"
+                            class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition" />
+                    </div>
+                    <p class="text-xs text-stone-500 pl-1">🌄 use a quality image – makes your event shine</p>
+                </div>
+
+                <!-- status messages (error/success) -->
+                <% if (error) { %>
+                    <div
+                        class="bg-red-50/90 border border-red-200 text-red-700 px-6 py-5 rounded-2xl flex items-start gap-4">
+                        <i class="fas fa-circle-exclamation text-red-500 mt-0.5"></i>
+                        <div>
+                            <p class="font-medium text-sm">Couldn't create event</p>
+                            <p class="text-sm text-red-600/90">
+                                <%= error %>
+                            </p>
+                        </div>
+                    </div>
+                    <% } %>
+
+                        <% if (success) { %>
+                            <div
+                                class="bg-emerald-50/90 border border-emerald-200 text-emerald-700 px-6 py-5 rounded-2xl flex items-start gap-4">
+                                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                                <div>
+                                    <p class="font-medium text-sm">Event created!</p>
+                                    <p class="text-sm text-emerald-600/90">
+                                        <%= success %>
+                                    </p>
+                                </div>
+                            </div>
+                            <% } %>
+
+                                <!-- SUBMIT BUTTON – confident, warm, modest -->
+                                <div
+                                    class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-5 border-t border-stone-100">
+                                    <p class="text-xs text-stone-400 flex items-center gap-2">
+                                        <i class="fas fa-shield-alt"></i> your event will be live immediately
+                                    </p>
+                                    <button type="submit"
+                                        class="bg-blue-900 hover:bg-blue-800 text-white font-medium px-10 py-4 rounded-full transition text-base shadow-sm flex items-center justify-center gap-3 group w-full sm:w-auto">
+                                        <span>Publish event</span>
+                                        <i
+                                            class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
+                                </div>
+            </form>
         </div>
 
-        <!-- DESCRIPTION -->
-        <div class="space-y-2">
-          <label for="description" class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
-            <span class="text-blue-900 font-semibold">Description</span> <span class="text-stone-400">*</span>
-          </label>
-          <div class="relative">
-            <div class="absolute top-5 left-0 pl-4 flex items-start pointer-events-none">
-              <i class="fas fa-align-left text-stone-400 text-sm mt-1"></i>
+        <!-- QUICK TIPS – calm, helpful, on-brand -->
+        <div class="mt-16 max-w-2xl mx-auto text-center bg-stone-50/60 rounded-3xl p-8 border border-stone-100/70">
+            <div class="flex justify-center mb-4">
+                <span class="bg-stone-100 w-12 h-12 rounded-full flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-stone-600"></i>
+                </span>
             </div>
-            <textarea 
-              id="description" 
-              name="description" 
-              rows="5" 
-              required 
-              placeholder="Tell people what to expect — food, music, vibe, what to bring, who it's for..."
-              class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition"
-            ></textarea>
-          </div>
-          <p class="text-xs text-stone-500 pl-1">✨ the more details, the better the crew</p>
+            <h3 class="text-xl font-light text-stone-700 mb-5">tips for a great tuki</h3>
+            <ul class="text-sm text-stone-600 space-y-3 text-left max-w-md mx-auto">
+                <li class="flex items-start gap-3">
+                    <span class="text-blue-700 text-base">•</span>
+                    <span><span class="font-medium text-stone-700">Weekend focus</span> — Saturdays & Sundays get the
+                        most crew</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-blue-700 text-base">•</span>
+                    <span><span class="font-medium text-stone-700">Add details</span> — food, music, dress code, what to
+                        bring</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-blue-700 text-base">•</span>
+                    <span><span class="font-medium text-stone-700">Use a photo</span> — events with images get 2x more
+                        interest</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-blue-700 text-base">•</span>
+                    <span><span class="font-medium text-stone-700">Start small</span> — 20–50 tickets feel cozy & sell
+                        out</span>
+                </li>
+            </ul>
+            <p class="text-xs text-stone-400 mt-6 italic">— just tuki, then relax —</p>
         </div>
+    </main>
 
-        <!-- DATE & TIME + LOCATION (grid) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- date/time -->
-          <div class="space-y-2">
-            <label for="event_date" class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
-              <span class="text-blue-900 font-semibold">Date & time</span> <span class="text-stone-400">*</span>
-            </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i class="fas fa-clock text-stone-400 text-sm"></i>
-              </div>
-              <input 
-                type="text" 
-                id="event_date" 
-                name="event_date" 
-                required 
-                placeholder="Pick a date & time"
-                class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition"
-              />
+    <!-- FOOTER – minimal, same as other pages -->
+    <footer class="bg-white border-t border-stone-200/50 mt-8 py-10 text-stone-500 text-sm">
+        <div class="container mx-auto px-5 max-w-6xl">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3 text-base">
+                    <span class="font-medium text-stone-800">TukiPlan</span>
+                    <span class="text-stone-300">|</span>
+                    <span class="text-stone-500 text-sm">plan weekends, together</span>
+                </div>
+                <div class="flex space-x-8 text-sm">
+                    <a href="#" class="text-stone-500 hover:text-blue-800 transition">Events</a>
+                    <a href="#" class="text-stone-500 hover:text-blue-800 transition">Meetups</a>
+                    <a href="#" class="text-stone-500 hover:text-blue-800 transition">About</a>
+                    <a href="#" class="text-stone-500 hover:text-blue-800 transition">Contact</a>
+                </div>
+                <div class="flex items-center space-x-5 text-stone-400">
+                    <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-whatsapp"></i></a>
+                </div>
             </div>
-            <p class="text-xs text-stone-500 pl-1">📆 weekends = more tukis</p>
-          </div>
-
-          <!-- location -->
-          <div class="space-y-2">
-            <label for="location" class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
-              <span class="text-blue-900 font-semibold">Location</span> <span class="text-stone-400">*</span>
-            </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i class="fas fa-map-pin text-stone-400 text-sm"></i>
-              </div>
-              <input 
-                type="text" 
-                id="location" 
-                name="location" 
-                required 
-                placeholder="e.g. Uhuru Park, Nairobi"
-                class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition"
-              />
+            <div class="text-center md:text-left text-xs text-stone-400 mt-8 border-t border-stone-100 pt-8">
+                <p>&copy; <%= new Date().getFullYear() %> TukiPlan. Just tuki — then relax.</p>
             </div>
-          </div>
         </div>
+    </footer>
 
-        <!-- PRICE & TICKET QUANTITY (grid) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- price -->
-          <div class="space-y-2">
-            <label for="price" class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
-              <span class="text-blue-900 font-semibold">Ticket price (KSh)</span> <span class="text-stone-400">*</span>
-            </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i class="fas fa-tag text-stone-400 text-sm"></i>
-              </div>
-              <input 
-                type="number" 
-                id="price" 
-                name="price" 
-                min="0" 
-                step="50" 
-                required 
-                value="0"
-                class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition"
-              />
-            </div>
-            <p class="text-xs text-stone-500 pl-1">🆓 0 = free entry</p>
-          </div>
+    <!-- Flatpickr init – friendly datetime picker -->
+    <script>
+        flatpickr("#event_date", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+            time_24hr: true,
+            defaultHour: 15,
+            defaultMinute: 0,
+            placeholder: "Pick a date & time",
+            // weekend encouragement – subtle highlight (optional)
+            onReady: function (selectedDates, dateStr, instance) {
+                // just a gentle reminder in console, no intrusive UI
+                console.log("✨ weekends are best for tukis!");
+            }
+        });
 
-          <!-- tickets available -->
-          <div class="space-y-2">
-            <label for="tickets_available" class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
-              <span class="text-blue-900 font-semibold">Tickets available</span> <span class="text-stone-400">*</span>
-            </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i class="fas fa-ticket text-stone-400 text-sm"></i>
-              </div>
-              <input 
-                type="number" 
-                id="tickets_available" 
-                name="tickets_available" 
-                min="1" 
-                required 
-                value="30"
-                class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition"
-              />
-            </div>
-            <p class="text-xs text-stone-500 pl-1">🎟️ start small, sell out faster</p>
-          </div>
-        </div>
-
-        <!-- IMAGE LINK (optional) -->
-        <div class="space-y-2">
-          <label for="imagelink" class="block text-sm font-medium text-stone-700 pl-1 flex items-center gap-1">
-            <span class="text-blue-900 font-semibold">Event image link</span> 
-            <span class="text-stone-400 text-xs font-normal">(optional but recommended)</span>
-          </label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <i class="fas fa-image text-stone-400 text-sm"></i>
-            </div>
-            <input 
-              type="url" 
-              id="imagelink" 
-              name="imagelink" 
-              placeholder="https://images.unsplash.com/... or your own URL"
-              class="w-full pl-11 pr-4 py-4 bg-stone-50/80 border border-stone-200 rounded-2xl text-stone-700 placeholder:text-stone-400 text-base focus:outline-none input-ring transition"
-            />
-          </div>
-          <p class="text-xs text-stone-500 pl-1">🌄 use a direct image URL – makes your event shine</p>
-        </div>
-
-        <!-- status messages (error/success) -->
-        <% if (error) { %>
-          <div class="bg-red-50/90 border border-red-200 text-red-700 px-6 py-5 rounded-2xl flex items-start gap-4">
-            <i class="fas fa-circle-exclamation text-red-500 mt-0.5"></i>
-            <div>
-              <p class="font-medium text-sm">Couldn't create event</p>
-              <p class="text-sm text-red-600/90"><%= error %></p>
-            </div>
-          </div>
-        <% } %>
-
-        <% if (success) { %>
-          <div class="bg-emerald-50/90 border border-emerald-200 text-emerald-700 px-6 py-5 rounded-2xl flex items-start gap-4">
-            <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
-            <div>
-              <p class="font-medium text-sm">Event created!</p>
-              <p class="text-sm text-emerald-600/90"><%= success %></p>
-            </div>
-          </div>
-        <% } %>
-
-        <!-- SUBMIT BUTTON – confident, warm, modest -->
-        <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-5 border-t border-stone-100">
-          <p class="text-xs text-stone-400 flex items-center gap-2">
-            <i class="fas fa-shield-alt"></i> your event will be live immediately
-          </p>
-          <button 
-            type="submit" 
-            class="bg-blue-900 hover:bg-blue-800 text-white font-medium px-10 py-4 rounded-full transition text-base shadow-sm flex items-center justify-center gap-3 group w-full sm:w-auto"
-          >
-            <span>Publish event</span>
-            <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- QUICK TIPS – calm, helpful, on-brand -->
-    <div class="mt-16 max-w-2xl mx-auto text-center bg-stone-50/60 rounded-3xl p-8 border border-stone-100/70">
-      <div class="flex justify-center mb-4">
-        <span class="bg-stone-100 w-12 h-12 rounded-full flex items-center justify-center">
-          <i class="fas fa-lightbulb text-stone-600"></i>
-        </span>
-      </div>
-      <h3 class="text-xl font-light text-stone-700 mb-5">tips for a great tuki</h3>
-      <ul class="text-sm text-stone-600 space-y-3 text-left max-w-md mx-auto">
-        <li class="flex items-start gap-3">
-          <span class="text-blue-700 text-base">•</span>
-          <span><span class="font-medium text-stone-700">Weekend focus</span> — Saturdays & Sundays get the most crew</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="text-blue-700 text-base">•</span>
-          <span><span class="font-medium text-stone-700">Add details</span> — food, music, dress code, what to bring</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="text-blue-700 text-base">•</span>
-          <span><span class="font-medium text-stone-700">Use a photo</span> — events with images get 2x more interest</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="text-blue-700 text-base">•</span>
-          <span><span class="font-medium text-stone-700">Start small</span> — 20–50 tickets feel cozy & sell out</span>
-        </li>
-      </ul>
-      <p class="text-xs text-stone-400 mt-6 italic">— just tuki, then relax —</p>
-    </div>
-  </main>
-
-  <!-- FOOTER – minimal, same as other pages -->
-  <footer class="bg-white border-t border-stone-200/50 mt-8 py-10 text-stone-500 text-sm">
-    <div class="container mx-auto px-5 max-w-6xl">
-      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="flex items-center gap-3 text-base">
-          <span class="font-medium text-stone-800">TukiPlan</span>
-          <span class="text-stone-300">|</span>
-          <span class="text-stone-500 text-sm">plan weekends, together</span>
-        </div>
-        <div class="flex space-x-8 text-sm">
-          <a href="#" class="text-stone-500 hover:text-blue-800 transition">Events</a>
-          <a href="#" class="text-stone-500 hover:text-blue-800 transition">Meetups</a>
-          <a href="#" class="text-stone-500 hover:text-blue-800 transition">About</a>
-          <a href="#" class="text-stone-500 hover:text-blue-800 transition">Contact</a>
-        </div>
-        <div class="flex items-center space-x-5 text-stone-400">
-          <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-whatsapp"></i></a>
-        </div>
-      </div>
-      <div class="text-center md:text-left text-xs text-stone-400 mt-8 border-t border-stone-100 pt-8">
-        <p>&copy; <%= new Date().getFullYear() %> TukiPlan. Just tuki — then relax.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Flatpickr init – friendly datetime picker -->
-  <script>
-    flatpickr("#event_date", {
-      enableTime: true,
-      dateFormat: "Y-m-d H:i",
-      minDate: "today",
-      time_24hr: true,
-      defaultHour: 15,
-      defaultMinute: 0,
-      placeholder: "Pick a date & time",
-      // weekend encouragement – subtle highlight (optional)
-      onReady: function(selectedDates, dateStr, instance) {
-        // just a gentle reminder in console, no intrusive UI
-        console.log("✨ weekends are best for tukis!");
-      }
-    });
-
-    // mobile menu placeholder
-    document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
-      alert('Menu — ready for your mobile implementation 🏕️');
-    });
-  </script>
+        // mobile menu placeholder
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', function () {
+            alert('Menu — ready for your mobile implementation 🏕️');
+        });
+    </script>
 </body>
+
 </html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title || 'TukiPlan · not authorized' %></title>
+  
+  <!-- Tailwind + Inter font style -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <style>
+    /* TukiPlan signature – calm, modest, elegant */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .soft-shadow {
+      box-shadow: 0 8px 30px rgba(0,0,0,0.02), 0 2px 6px rgba(0,20,30,0.02);
+    }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased flex flex-col min-h-screen">
+
+  <!-- NAVBAR – exactly as other TukiPlan pages -->
+  <nav class="bg-white/90 backdrop-blur-sm border-b border-stone-200/60 text-stone-700 sticky top-0 z-20">
+    <div class="container mx-auto px-5 md:px-6 py-4 flex justify-between items-center">
+      <a href="/" class="text-2xl md:text-3xl font-light tracking-tight text-stone-800 flex items-end gap-1">
+        <span class="font-semibold text-blue-900">TukiPlan</span>
+        <span class="text-xs uppercase bg-stone-100 text-stone-600 px-2 py-1 rounded-full font-medium border border-stone-200/50">weekend</span>
+      </a>
+      
+      <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+        <a href="/events" class="text-stone-600 hover:text-blue-900 transition-colors flex items-center gap-1.5">
+          <i class="far fa-compass text-xs"></i> Discover
+        </a>
+        <a href="/meetups" class="text-stone-600 hover:text-blue-900 transition-colors flex items-center gap-1.5">
+          <i class="fas fa-user-group text-xs"></i> Plan together
+        </a>
+        <a href="/login" class="text-stone-600 hover:text-blue-900 transition">Login</a>
+        <a href="/register" class="bg-blue-900 text-white px-5 py-2 rounded-full hover:bg-blue-800 transition shadow-sm text-sm font-medium">Sign up</a>
+      </div>
+
+      <button class="md:hidden text-stone-600 p-2 rounded-full hover:bg-stone-100" id="mobile-menu-btn">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN – elegant, minimal, reassuring -->
+  <main class="container mx-auto px-5 py-20 md:py-28 flex-grow flex items-center justify-center">
+    <div class="max-w-lg text-center">
+
+      <!-- simple icon – exactly like TukiPlan's quiet elegance -->
+      <div class="mb-8 flex justify-center">
+        <div class="w-28 h-28 md:w-32 md:h-32 bg-stone-100 rounded-full flex items-center justify-center border border-stone-200/60 soft-shadow">
+          <i class="fas fa-lock-open text-4xl md:text-5xl text-stone-400"></i>
+        </div>
+      </div>
+
+      <!-- subtle error code – not shouting -->
+      <span class="inline-block bg-stone-200/50 text-stone-600 px-4 py-1.5 rounded-full text-xs uppercase tracking-wider mb-5 border border-stone-200/60">
+        403 · not authorized
+      </span>
+
+      <!-- headline – calm, like a friend explaining -->
+      <h1 class="text-3xl md:text-4xl font-light text-stone-800 mb-4 leading-tight">
+        almost there, 
+        <span class="font-semibold text-blue-900">just a step away</span>
+      </h1>
+
+      <p class="text-base md:text-lg text-stone-600 mb-10 max-w-sm mx-auto">
+        This page is for logged‑in users. Sign in or create an account to join the tuki.
+      </p>
+
+      <!-- simple card – no clutter, just options -->
+      <div class="bg-white/90 backdrop-blur-sm rounded-2xl soft-shadow border border-stone-100/80 p-8 mb-10 max-w-sm mx-auto">
+        
+        <!-- two clear, friendly buttons -->
+        <div class="space-y-3">
+          <a href="/login" 
+             class="block w-full bg-blue-900 hover:bg-blue-800 text-white font-medium px-6 py-4 rounded-full transition text-base shadow-sm flex items-center justify-center gap-2 group">
+            <span>Log in</span>
+            <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+          </a>
+          
+          <a href="/register" 
+             class="block w-full bg-white border border-stone-300 text-stone-700 hover:bg-stone-50 font-medium px-6 py-4 rounded-full transition text-base flex items-center justify-center gap-2 group">
+            <span>Create free account</span>
+            <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+          </a>
+        </div>
+
+        <!-- quick contact – minimal -->
+        <p class="text-xs text-stone-400 mt-6 text-center">
+          <i class="far fa-envelope mr-1"></i> 
+          need help? <a href="/support" class="underline underline-offset-2 decoration-stone-300 hover:text-stone-600">talk to us</a>
+        </p>
+      </div>
+
+      <!-- back home – quiet link -->
+      <a href="/" class="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-700 transition group">
+        <i class="fas fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i>
+        <span>back to home</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- FOOTER – minimal, exactly as other TukiPlan pages -->
+  <footer class="bg-white border-t border-stone-200/50 py-10 text-stone-500 text-sm">
+    <div class="container mx-auto px-5 max-w-6xl">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-3 text-base">
+          <span class="font-medium text-stone-800">TukiPlan</span>
+          <span class="text-stone-300">|</span>
+          <span class="text-stone-500 text-sm">plan weekends, together</span>
+        </div>
+        <div class="flex space-x-8 text-sm">
+          <a href="#" class="text-stone-500 hover:text-blue-800 transition">Events</a>
+          <a href="#" class="text-stone-500 hover:text-blue-800 transition">Meetups</a>
+          <a href="#" class="text-stone-500 hover:text-blue-800 transition">About</a>
+          <a href="#" class="text-stone-500 hover:text-blue-800 transition">Contact</a>
+        </div>
+        <div class="flex items-center space-x-5 text-stone-400">
+          <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="hover:text-stone-700 transition text-lg"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="text-center md:text-left text-xs text-stone-400 mt-8 border-t border-stone-100 pt-8">
+        <p>&copy; <%= new Date().getFullYear() %> TukiPlan. Just tuki — then relax.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
+      alert('Menu — ready for your mobile implementation 🏕️');
+    });
+  </script>
+</body>
+</html>

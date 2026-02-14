@@ -35,12 +35,29 @@ app.use(session({
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, "public")));
 
+//authenticaton middleware
+const isAuthorized = (req, res, next) => {
+    if (req.session && req.session.user) {
+        return next()
+
+    }
+    //save the original url to redirect after login
+    req.session.returnTo = req.originalUrl
+
+    return res.status(401).render("notAuth", {
+        title: "Unauthorized - WeekendVibe"
+    })
+}
+
+
+
+
 //route to upload files using multer
 app.post("/upload", upload.single("image"), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" })
     }
-    res.status(200).json({ message: "File uploaded successfully", filePath: req.file.path })
+
 
     //save file path to database if needed
     const sql = "INSERT INTO events (imagelink) VALUES(?)";
@@ -52,6 +69,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
             console.log("File path saved to database successfully");
         }
     })
+    res.status(200).json({ message: "File uploaded successfully", filePath: req.file.path })
 })
 
 
@@ -85,7 +103,7 @@ app.get("/", (req, res) => {
 
 
     {
-        
+
     }
 })
 
@@ -118,13 +136,16 @@ app.post("/login", (req, res) => {
             if (isMatch) {
                 // Passwords match, login successful
                 console.log("Login successful for user:", user.email);
-                // Here you would typically create a session or JWT token
-                console.log("Login successful");
+
 
                 //create session
                 req.session.user = results[0]
 
-                res.redirect("/dashboard")
+                //redirect to original url or homepage
+                const redirectTo = req.session.returnTo || "/";
+                delete req.session.returnTo; // clear it after redirecting
+                res.redirect(redirectTo);
+
             } else {
                 // Passwords do not match
                 console.log("Login failed for user:", user.email);
@@ -171,13 +192,55 @@ app.post("/register", async (req, res) => {
 
 
 //create an event
-app.get("/create", (req,res)=>{
-res.render("createEvent", {
-    title: "Create Event - WeekendVibe",
-    user: null,
-    error: null,
-    success: null
-}) })
+app.get("/create", (req, res) => {
+    res.render("createEvent", {
+        title: "Create Event - WeekendVibe",
+        user: null,
+        error: null,
+        success: null
+    })
+})
+
+// app.post("/create", (req, res) => {
+//     const {title, description, event_date, location, price, tickets_available, image} = req.body;
+//     console.log("Received event data:", {title, description, event_date, location, price, tickets_available, image});
+//     res.send("Form received — check your server terminal now");
+// });
+
+app.post("/create", upload.single("image"), (req, res) => {
+    // Text fields
+    const { title, description, event_date, location, price, tickets_available } = req.body;
+
+    // File field
+    const imagePath = req.file ? req.file.path : null;
+
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
+    const insertEventQuery = `
+      INSERT INTO events (title, description, event_date, location, price, tickets_available, imagelink)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    connection.query(
+        insertEventQuery,
+        [title, description, event_date, location, price, tickets_available, imagePath],
+        (err, results) => {
+            if (err) {
+                console.error("Error inserting event into database", err);
+                return res.status(500).json({ message: "Internal Server Error" });
+            }
+
+            console.log("Event created successfully with ID:", results.insertId);
+
+            // ✅ Only one response here
+            return res.status(201).json({
+                message: "Event created successfully",
+                eventId: results.insertId
+            });
+        }
+    );
+});
 
 
 app.listen(port, () => {
