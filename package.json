@@ -9,7 +9,8 @@
     "multer": "^2.0.2",
     "mysql2": "^3.17.0",
     "nodemon": "^3.1.11",
-    "pdfkit": "^0.17.2"
+    "pdfkit": "^0.17.2",
+    "qrcode": "^1.5.4"
   },
   "name": "tukiplan",
   "version": "1.0.0",
