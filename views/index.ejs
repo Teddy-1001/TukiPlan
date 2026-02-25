@@ -187,7 +187,8 @@
                             <% events.forEach(event=> { %>
                                 <article
                                     class="bg-white rounded-2xl soft-shadow border border-stone-100/70 card-hover hover-lift flex flex-col h-full transition-all duration-200">
-                                    <div
+                                    <a href="/event/<%= event.id %>">
+                                       <div
                                         class="h-40 bg-gradient-to-br from-stone-50 to-stone-100/60 rounded-t-2xl flex items-center justify-center relative">
                                          <img src="<%= event.imagelink %>" alt="" class="absolute inset-0 w-full h-full object-cover rounded-t-2xl">
                                         <span
@@ -226,7 +227,9 @@
                                                 class="bg-stone-100 rounded-full w-7 h-7 flex items-center justify-center group-hover:bg-blue-100 transition"><i
                                                     class="fas fa-arrow-right text-xs"></i></span>
                                         </a>
-                                    </div>
+                                    </div> 
+                                    </a>
+                                    
                                 </article>
                                 <% }) %>
                         </div>

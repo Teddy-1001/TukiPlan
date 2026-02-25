@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= event.title %> - TukiPlan
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-50 text-stone-800 antialiased">
+
+    <%- include("./partials/navbar.ejs") %>
+
+        <main class="container mx-auto px-5 py-12 max-w-4xl">
+            <div class="bg-white rounded-3xl soft-shadow border border-stone-100 p-8">
+                <img src="<%= event.imagelink %>" alt="<%= event.title %>"
+                    class="rounded-xl w-full h-64 object-cover mb-6">
+
+                <h1 class="text-3xl font-semibold text-stone-800 mb-4">
+                    <%= event.title %>
+                </h1>
+                <p class="text-stone-600 mb-4">
+                    <%= event.description %>
+                </p>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-blue-700"></i>
+                        <span>
+                            <%= new Date(event.event_date).toLocaleString('en-KE', { weekday: 'short' , day: 'numeric' ,
+                                month: 'short' , hour: '2-digit' , minute: '2-digit' }) %>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-map-pin text-blue-700"></i>
+                        <span>
+                            <%= event.location %>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center border-t border-stone-100 pt-6">
+                    <span class="text-2xl font-semibold text-blue-900">KSh <%= event.price ?
+                            event.price.toLocaleString() : 'Free' %></span>
+                    <span class="text-stone-600">Tickets left: <%= event.tickets_available %></span>
+                </div>
+
+                <form action="/events/<%= event.id %>/book" method="POST" class="mt-6">
+                    <label>
+                        Number of Tickets:
+                        <input type="number" name="tickets_count" min="1" max="<%= event.tickets_available %>" value="1"
+                            class="border px-3 py-1 rounded" />
+                    </label>
+                    <button type="submit" class="bg-blue-900 text-white px-6 py-2 rounded mt-2 hover:bg-blue-800">
+                        Book Tickets
+                    </button>
+                </form>
+
+                <a href="/"
+                    class="mt-6 inline-block bg-blue-900 text-white px-8 py-3 rounded-full hover:bg-blue-800 transition">
+                    Back to Events
+                </a>
+            </div>
+        </main>
+
+        <%- include("./partials/footer.ejs") %>
+</body>
+
+</html>

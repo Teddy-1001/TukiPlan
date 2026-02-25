@@ -2,10 +2,12 @@
 import express from "express";
 import path from "path";
 import bcrypt from "bcrypt";
+import crypto from "crypto"; // for generating unique ticket codes
 import session from "express-session";
 import { fileURLToPath } from "url";
 import connection from "./db/dbConnect.js";
 import { configDotenv } from "dotenv";
+import PDFDocument from "pdfkit";
 configDotenv();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -95,7 +97,7 @@ app.get("/", (req, res) => {
             featuredEvent,
             events,
             searchQuery: req.query.q || "",
-            user: null
+            user: req.session.user || null
         });
     });
 
@@ -191,11 +193,20 @@ app.post("/register", async (req, res) => {
 })
 
 
-//create an event
-app.get("/create", (req, res) => {
-    res.render("createEvent", {
+//create a hangout
+app.get("/create-hangout", (req, res) => {
+    res.render("createHangout", {
         title: "Create Event - WeekendVibe",
-        user: null,
+        user: req.session.user || null,
+        error: null,
+        success: null
+    })
+})
+
+app.get("/create-event", (req, res) => {
+    res.render("createEvent.ejs", {
+        title: 'TukiPlan · create a weekend vibe',
+        user: req.session.user || null,
         error: null,
         success: null
     })
@@ -207,7 +218,7 @@ app.get("/create", (req, res) => {
 //     res.send("Form received — check your server terminal now");
 // });
 
-app.post("/create", upload.single("image"), (req, res) => {
+app.post("/create-hangout", upload.single("image"), (req, res) => {
     // Text fields
     const { title, description, event_date, location, price, tickets_available } = req.body;
 
@@ -228,7 +239,7 @@ app.post("/create", upload.single("image"), (req, res) => {
         (err, results) => {
             if (err) {
                 console.error("Error inserting event into database", err);
-                return res.status(500).json({ message: "Internal Server Error" });
+                return res.status(500).render("error", { message: "Internal Server Error" })
             }
 
             console.log("Event created successfully with ID:", results.insertId);
@@ -242,6 +253,182 @@ app.post("/create", upload.single("image"), (req, res) => {
     );
 });
 
+
+app.post("/create-event", isAuthorized, upload.single("image"), (req, res) => {
+    const { title, description, event_date, location, price, tickets_available } = req.body
+
+    ///fetch organiser id
+    const organizerId = req.session.user.id;
+
+    const imagePath = req.file ? req.file.path : null;
+
+    const insertEventQuery =
+        `INSERT INTO events (title, description, event_date, location, price, tickets_available, imagelink, organizer_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    connection.query(insertEventQuery, [title, description, event_date, location, price, tickets_available, imagePath, organizerId], (err, results) => {
+        if (err) {
+            console.error("Db error", err);
+            return res.status(500).render("createEvent", {
+                title: 'TukiPlan · create a weekend vibe',
+                user: req.session.user,
+                error: err.message,
+                success: null
+            })
+
+        }
+        return res.render("createEvent", {
+            title: 'TukiPlan · create a weekend vibe',
+            user: req.session.user || null,
+            success: "Event created successfully!",
+            error: null
+        })
+    })
+})
+
+//event details page
+app.get("/event/:id", (req, res) => {
+    const eventId = req.params.id;
+
+    const eventQuery = "SELECT * FROM events WHERE id =?"
+    connection.query(eventQuery, [eventId], (err, result) => {
+        if (err) {
+            console.error("DB error", err);
+            return res.status(500).render("error", { message: "Internal server error" })
+        }
+        if (result.length === 0) {
+            return res.status(404).render("error", { message: "Event not found" })
+        }
+        const event = result[0]
+
+        res.render("eventDetails.ejs", {
+            title: event.title,
+            event,
+            user: req.session.user || null
+        })
+    })
+})
+
+
+app.post("/events/:eventId/book", isAuthorized, (req, res) => {
+    const { eventId } = req.params
+    const { tickets_count } = req.body
+    const userId = req.session.user.id
+
+    //check if user exists and tickets available
+    connection.query("SELECT tickets_available,title FROM events WHERE id = ?", [eventId], (err, results) => {
+        if (err)
+            return res.status(500).json({ message: "DB error" })
+        if (results.length === 0)
+            return res.status(404).json({ message: "Event not found" })
+
+        const event = results[0]
+        if (event.tickets_available < tickets_count) {
+            return res.status(400).json({ message: "Not enough tickets available" })
+        }
+        //generate ticket code
+        const ticketCode = crypto.randomBytes(4).toString("hex").toUpperCase()
+
+        //insert booking
+        connection.query("INSERT INTO bookings (event_id, user_id, tickets_count, ticket_code) VALUES(?, ?, ?, ?)",
+            [eventId, userId, tickets_count, ticketCode],
+            (err, result) => {
+                if (err) return res.status(500).json({ message: "Error creating booking" });
+
+                //return tickets_available in event
+                connection.query(
+                    "UPDATE events SET tickets_available = tickets_available-? WHERE id=?",
+                    [tickets_count, eventId],(err)=>{
+                        if (err) console.error("Update error:", err);
+                    }
+                )
+
+                //return booking details
+                return res.status(200).json({
+                    message: `Successfully booked ${tickets_count} tickets for ${event.title}`,
+                    ticketCode,
+                    eventId,
+                    tickets_count,
+                })
+            }
+        )
+    })
+})
+
+
+
+
+app.get("/my-tickets", isAuthorized, (req, res) => {
+    const userId = req.session.user.id;
+
+    const query = `
+        SELECT b.*, e.title, e.event_date, e.location, e.imagelink
+        FROM bookings b
+        JOIN events e ON b.event_id = e.id
+        WHERE b.user_id = ?
+        ORDER BY b.created_at DESC
+    `;
+
+    connection.query(query, [userId], (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send("Server error");
+        }
+
+        res.render("my-tickets.ejs", { tickets: results });
+    });
+});
+
+
+app.get("/tickets/:ticketCode", isAuthorized, (req, res) => {
+    const { ticketCode } = req.params;
+    const userId = req.session.user.id;
+
+    const query = `
+        SELECT b.*, e.title, e.event_date, e.location
+        FROM bookings b
+        JOIN events e ON b.event_id = e.id
+        WHERE b.ticket_code = ? AND b.user_id = ?
+    `;
+
+    connection.query(query, [ticketCode, userId], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Database error");
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send("Ticket not found");
+        }
+
+        const booking = results[0];
+
+        // Create PDF
+        const doc = new PDFDocument();
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename=ticket-${booking.ticket_code}.pdf`
+        );
+
+        doc.pipe(res);
+
+        doc.fontSize(20).text("🎟 TukiPlan Ticket", { align: "center" });
+
+        doc.moveDown();
+
+        doc.text(`Event: ${booking.title}`);
+        doc.text(`Date: ${new Date(booking.event_date).toLocaleString()}`);
+        doc.text(`Location: ${booking.location}`);
+        doc.text(`Tickets: ${booking.tickets_count}`);
+        doc.text(`Ticket Code: ${booking.ticket_code}`);
+
+        doc.moveDown();
+        doc.text("Show this ticket at entry", { align: "center" });
+
+        doc.end();
+    });
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

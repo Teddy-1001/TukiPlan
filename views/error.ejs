@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error - WeekendVibe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        .error-container {
+            max-width: 500px;
+            margin: auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 72px;
+            margin: 0;
+            color: #e74c3c;
+        }
+        p {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background-color: #3498db;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        a:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>Oops!</h1>
+        <p><%= message || "Something went wrong." %></p>
+        <a href="/">Go Back Home</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>My Tickets</h1>
+
+    <% if (tickets.length===0) { %>
+        <p>You have no tickets yet.</p>
+        <% } else { %>
+            <div class="tickets">
+                <% tickets.forEach(ticket=> { %>
+                    <div class="bg-white p-4 rounded shadow mb-4">
+                        <h2>
+                            <%= ticket.title %>
+                        </h2>
+                        <p>
+                            <%= new Date(ticket.event_date).toLocaleString() %>
+                        </p>
+                        <p>
+                            <%= ticket.location %>
+                        </p>
+
+                        <a href="/tickets/<%= ticket.ticket_code %>" class="bg-blue-600 text-white px-4 py-2 rounded">
+                            Download Ticket
+                        </a>
+                    </div>
+                    <% }) %>
+            </div>
+            <% } %>
+</body>
+
+</html>
